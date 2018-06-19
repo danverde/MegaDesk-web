@@ -99,7 +99,6 @@
     <Content Include="EditQuote.cshtml" />
     <Content Include="DeleteQuote.cshtml" />
     <None Include="packages.config" />
-    <Content Include="ViewQuotes.cshtml" />
     <Content Include="SearchQuotes.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -107,6 +106,10 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

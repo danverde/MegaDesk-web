@@ -1,9 +1,37 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>@Page.Title</title>
+    <style>
+        @@import url('https://fonts.googleapis.com/css?family=Roboto');
+        html {
+            background-color: lightgray;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: auto;
+            width: 80vw;
+            min-width: 800px;
+            background-color: white;
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 0 20px;
+        }
+
+        main {
+            padding:10px;
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <h1>MegaDesk</h1>
+    </header>
     @RenderBody()
+    <footer>
+        <hr />
+        <p>Daniel Green &amp; Durid Ahmad</p>
+    </footer>
 </body>
 </html>

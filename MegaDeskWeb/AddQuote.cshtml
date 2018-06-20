@@ -1,33 +1,24 @@
 ﻿@{ 
-    
 
     Layout = "~/_Layout.cshtml";
     Page.Title = "Add a Quote";
 
-    // I Don't think we'll really need these...
-    string customerName;
-    decimal depth;
-    decimal width;
-    int numDrawers;
-    int surfaceMaterial;
-    int deliveryTime;
-    DateTime orderDate;
-
-    string message = "";
 
 
     if (IsPost)
     {
-        customerName = Request.Form["customerName"];
-        depth = Decimal.Parse(Request.Form["depth"]);
-        width = Decimal.Parse(Request.Form["width"]);
-        numDrawers = Int32.Parse(Request.Form["numDrawers"]);
-        surfaceMaterial = Int32.Parse(Request.Form["surfaceMaterial"]);
-        deliveryTime = Int32.Parse(Request.Form["deliveryTime"]);
-        orderDate = DateTime.Now;
+        // message = "Posted correctly! :D";
 
+        Desk newDesk = new Desk
+        {
+            Depth = Decimal.Parse(Request.Form["depth"]),
+            Width = Decimal.Parse(Request.Form["width"]),
+            NumDrawers = Int32.Parse(Request.Form["numDrawers"]),
+            SurfaceMaterial = Int32.Parse(Request.Form["surfaceMaterial"])
+        };
 
-        message = "Posted correctly! :D";
+        // DeskQuote newQuote = new DeskQuote();
+        DeskQuote newQuote = new DeskQuote(newDesk, Request.Form["customerName"], Int32.Parse(Request.Form["deliveryTime"]), DateTime.Now);
     }
 }
 
@@ -42,8 +33,8 @@
         <fieldset>
             <legend>Desk Information</legend>
             <p>
-                <label for="name">Customer Name:</label>
-                <input type="text" name="name" required />
+                <label for="customerName">Customer Name:</label>
+                <input type="text" name="customerName" required />
             </p>
             <p>
                 <label for="depth">Depth:</label>

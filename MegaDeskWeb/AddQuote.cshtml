@@ -1,9 +1,84 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+﻿@{ 
+    
 
-</body>
-</html>
+    Layout = "~/_Layout.cshtml";
+    Page.Title = "Add a Quote";
+
+    // I Don't think we'll really need these...
+    string customerName;
+    decimal depth;
+    decimal width;
+    int numDrawers;
+    int surfaceMaterial;
+    int deliveryTime;
+    DateTime orderDate;
+
+    string message = "";
+
+
+    if (IsPost)
+    {
+        customerName = Request.Form["customerName"];
+        depth = Decimal.Parse(Request.Form["depth"]);
+        width = Decimal.Parse(Request.Form["width"]);
+        numDrawers = Int32.Parse(Request.Form["numDrawers"]);
+        surfaceMaterial = Int32.Parse(Request.Form["surfaceMaterial"]);
+        deliveryTime = Int32.Parse(Request.Form["deliveryTime"]);
+        orderDate = DateTime.Now;
+
+
+        message = "Posted correctly! :D";
+    }
+}
+
+<style>
+    #formButtons .button {
+        margin: 0 5px;
+    }
+</style>
+<main>
+    <h2>Add Quote</h2>
+    <form method="post">
+        <fieldset>
+            <legend>Desk Information</legend>
+            <p>
+                <label for="name">Customer Name:</label>
+                <input type="text" name="name" required />
+            </p>
+            <p>
+                <label for="depth">Depth:</label>
+                <input type="number" name="depth" min="12" max="48" required />
+            </p>
+            <p>
+                <label for="width">Width:</label>
+                <input type="number" name="width" min="24" max="96" required />
+            </p>
+            <p>
+                <label for="numDrawers">Number of Drawers:</label>
+                <input type="number" name="numDrawers" min="0" max="12" required />
+            </p>
+            <p>
+                <label for="surfaceMaterial">Surface Material:</label>
+                <select name="surfaceMaterial">
+                    <option value="100">Laminate</option>
+                    <option value="200">Oak</option>
+                    <option value="50">Pine</option>
+                    <option value="300">Rosewood</option>
+                    <option value="125">Veneer</option>
+                </select>
+            </p>
+            <p>
+                <label for="deliveryTime">Delivery Time:</label>
+                <select name="deliveryTime">
+                    <option value="3">3 Days - Rush</option>
+                    <option value="5">5 Days - Rush</option>
+                    <option value="7">7 Days - Rush</option>
+                    <option value="14">14 Days - No Rush</option>
+                </select>
+            </p>
+            <div class="flex-wrapper flex-end" id="formButtons">
+                <input class="button btn-primary" type="submit" value="Save Quote" />
+            </div>
+        </fieldset>
+    </form>
+</main>

@@ -3,7 +3,14 @@
     Layout = "~/_Layout.cshtml";
     Page.Title = "Add a Quote";
 
+    var materialList = Desk.Surface.GetValues(typeof(Desk.Surface)).Cast<Desk.Surface>().Select(s => new SelectListItem
+    {
+        Text = s.ToString(),
+        Value = ((int)s).ToString()
+    }).ToList();
 
+    // doesn't work yet
+    var deliveryTime = (IEnumerable<SelectListItem>)System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(DeskQuote.Delivery)); //.EnumHelper.GetSelectList(typeof(DeskQuote.Delivery));
 
     if (IsPost)
     {
@@ -15,6 +22,9 @@
             NumDrawers = Int32.Parse(Request.Form["numDrawers"]),
             SurfaceMaterial = Int32.Parse(Request.Form["surfaceMaterial"])
         };
+
+
+
 
         DeskQuote newQuote = new DeskQuote(newDesk, Request.Form["customerName"], Int32.Parse(Request.Form["deliveryTime"]), DateTime.Now);
         Database db = Database.Open("ScriptureLibrary");
@@ -51,6 +61,10 @@
             </p>
             <p>
                 <label for="surfaceMaterial">Surface Material:</label>
+                @Html.DropDownList("surfaceMaterial", materialList)
+                    
+
+
                 <select name="">
                     <option value="100">Laminate</option>
                     <option value="200">Oak</option>
@@ -61,6 +75,7 @@
             </p>
             <p>
                 <label for="deliveryTime">Delivery Time:</label>
+                @Html.DropDownList("deliveryTime", deliveryTime)
                 <select name="deliveryTime">
                     <option value="3">3 Days - Rush</option>
                     <option value="5">5 Days - Rush</option>

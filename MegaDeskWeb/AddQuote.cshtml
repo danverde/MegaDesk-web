@@ -7,7 +7,6 @@
 
     if (IsPost)
     {
-        // message = "Posted correctly! :D";
 
         Desk newDesk = new Desk
         {
@@ -17,8 +16,10 @@
             SurfaceMaterial = Int32.Parse(Request.Form["surfaceMaterial"])
         };
 
-        // DeskQuote newQuote = new DeskQuote();
         DeskQuote newQuote = new DeskQuote(newDesk, Request.Form["customerName"], Int32.Parse(Request.Form["deliveryTime"]), DateTime.Now);
+        Database db = Database.Open("ScriptureLibrary");
+        string insertCommand = "INSERT INTO DeskQuotes (Depth, Width, NumDrawers, SurfaceMaterial, OrderDate, CustomerName, Price, DeliveryTime) VALUES (@0, @1, @2, @3, @4, @5, @6, @7)";
+        db.Execute(insertCommand, newQuote.Desk.Depth, newQuote.Desk.Width, newQuote.Desk.SurfaceMaterial, newQuote.OrderDate, newQuote.CustomerName, newQuote.Price, newQuote.DeliveryTime);
     }
 }
 
@@ -50,7 +51,7 @@
             </p>
             <p>
                 <label for="surfaceMaterial">Surface Material:</label>
-                <select name="surfaceMaterial">
+                <select name="">
                     <option value="100">Laminate</option>
                     <option value="200">Oak</option>
                     <option value="50">Pine</option>

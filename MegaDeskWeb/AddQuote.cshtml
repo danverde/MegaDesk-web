@@ -17,14 +17,22 @@
             Depth = Decimal.Parse(Request.Form["depth"]),
             Width = Decimal.Parse(Request.Form["width"]),
             NumDrawers = Int32.Parse(Request.Form["numDrawers"]),
-            SurfaceMaterial = Int32.Parse(Request.Form["surfaceMaterial"])
+            SurfaceMaterial = (int)Enum.Parse(typeof(Desk.Surface), Request.Form["surfaceMaterial"])
         };
 
+        DeskQuote newQuote = new DeskQuote(newDesk, Request.Form["customerName"], (int)Enum.Parse(typeof(DeskQuote.Delivery), Request.Form["deliveryTime"]), DateTime.Now);
 
-        DeskQuote newQuote = new DeskQuote(newDesk, Request.Form["customerName"], Int32.Parse(Request.Form["deliveryTime"]), DateTime.Now);
+        /* Convert enum from int to string */
+        Desk.Surface sm = (Desk.Surface)newDesk.SurfaceMaterial;
+        string surfaceMaterial = sm.ToString();
+
+        DeskQuote.Delivery dl = (DeskQuote.Delivery)newQuote.DeliveryTime;
+        string deliveryTime = dl.ToString();
+
+
         Database db = Database.Open("DeskLibrary");
         string insertCommand = "INSERT INTO DeskQuotes (Depth, Width, NumDrawers, SurfaceMaterial, OrderDate, CustomerName, Price, DeliveryTime) VALUES (@0, @1, @2, @3, @4, @5, @6, @7)";
-        db.Execute(insertCommand, newQuote.Desk.Depth, newQuote.Desk.Width, newDesk.NumDrawers, newQuote.Desk.SurfaceMaterial, newQuote.OrderDate, newQuote.CustomerName, newQuote.Price, newQuote.DeliveryTime);
+        db.Execute(insertCommand, newQuote.Desk.Depth, newQuote.Desk.Width, newDesk.NumDrawers, surfaceMaterial, newQuote.OrderDate, newQuote.CustomerName, newQuote.Price, deliveryTime);
         Response.Redirect("~/SearchQuotes");
     }
 }
@@ -59,11 +67,11 @@
             <p>
                 <label for="surfaceMaterial">Surface Material:</label>
                 <select name="surfaceMaterial">
-                    <option value="100">Laminate</option>
-                    <option value="200">Oak</option>
-                    <option value="50">Pine</option>
-                    <option value="300">Rosewood</option>
-                    <option value="125">Veneer</option>
+                    <option value="Laminate">Laminate</option>
+                    <option value="Laminate">Oak</option>
+                    <option value="Laminate">Pine</option>
+                    <option value="Laminate">Rosewood</option>
+                    <option value="Laminate">Veneer</option>
                 </select>
             </p>
             <p>

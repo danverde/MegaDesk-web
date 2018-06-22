@@ -6,10 +6,10 @@
     string selectCommand = "SELECT * FROM DeskQuotes";
     string searchTerm = "";
 
-    if (!Request.QueryString["searchBook"].IsEmpty())
+    if (!Request.QueryString["searchMaterial"].IsEmpty() && Request.QueryString["searchMaterial"] != "all")
     {
-        searchTerm = Request.QueryString["searchBook"];
-        selectCommand = "SELECT * FROM Scriptures WHERE Book = @0";
+        searchTerm = Request.QueryString["searchMaterial"];
+        selectCommand = "SELECT * FROM DeskQuotes WHERE SurfaceMaterial = @0";
     }
 
     var selectedData = db.Query(selectCommand, searchTerm);
@@ -19,6 +19,20 @@
 
 <main>
     <h2>Search Quotes!</h2>
+    <form method="get">
+        <p>
+            <label for="searchMaterial">Search Quotes by Material:</label>
+            <select name="searchMaterial">
+                <option value="Laminate">Laminate</option>
+                <option value="Oak">Oak</option>
+                <option value="Pine">Pine</option>
+                <option value="Rosewood">Rosewood</option>
+                <option value="Veneer">Veneer</option>
+                <option value="all">Show All</option>
+            </select>
+            <input type="submit" class="button" value="Search" /><br />
+        </p>
+    </form>
     @grid.GetHtml(
         tableStyle: "grid",
         headerStyle: "tableHead",

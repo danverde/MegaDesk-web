@@ -1,0 +1,91 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+html {
+    background-color: lightgray;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: auto;
+    width: 80vw;
+    min-width: 800px;
+    background-color: white;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+main {
+    padding: 10px;
+}
+
+.flex-wrapper {
+    display: flex;
+    align-items: baseline;
+}
+
+.flex-end {
+    justify-content: flex-end;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+button.button,
+input.button {
+    background-color: darkslateblue;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 15px;
+}
+
+a.button {
+    text-align: center;
+    color: white;
+    background-color: darkslateblue;
+    border-radius: 5px;
+    padding: 10px;
+    text-decoration: none;
+    user-select: none;
+}
+
+.button:hover {
+    background-color: #6858c5;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.button.btn-warning {
+    background-color: #ff2020;
+}
+
+
+.grid {
+    margin: 4px;
+    border-collapse: collapse;
+    width: 600px;
+}
+
+    .grid th,
+    .grid td {
+        border: 1px solid #C0C0C0;
+        padding: 5px;
+    }
+
+.tableHead {
+    background-color: #E8E8E8;
+    font-weight: bold;
+    color: #FFF;
+}
+
+.altRow {
+    background-color: #E8E8E8;
+    color: #000;
+}
+
+select {
+    font-size: 12pt;
+}

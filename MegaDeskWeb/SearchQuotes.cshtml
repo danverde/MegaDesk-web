@@ -1,8 +1,39 @@
 ﻿@{ 
     Layout = "~/_Layout.cshtml";
     Page.Title = "Search Quotes";
+
+    Database db = Database.Open("DeskLibrary");
+    string selectCommand = "SELECT * FROM DeskQuotes";
+    string searchTerm = "";
+
+    if (!Request.QueryString["searchBook"].IsEmpty())
+    {
+        searchTerm = Request.QueryString["searchBook"];
+        selectCommand = "SELECT * FROM Scriptures WHERE Book = @0";
+    }
+
+    var selectedData = db.Query(selectCommand, searchTerm);
+
+    WebGrid grid = new WebGrid(source: selectedData, rowsPerPage: 5);
 }
 
 <main>
     <h2>Search Quotes!</h2>
+    @grid.GetHtml(
+        tableStyle: "grid",
+        headerStyle: "tableHead",
+        alternatingRowStyle: "altRow",
+        columns: grid.Columns(
+            grid.Column(format: @<a href="~/EditQuote?id=@item.ID">Edit</a>),
+            grid.Column("CustomerName"),
+            grid.Column("OrderDate"),
+            grid.Column("Depth"),
+            grid.Column("Width"),
+            grid.Column("NumDrawers"),
+            grid.Column("SurfaceMaterial"),
+            grid.Column("DeliveryTime"),
+            grid.Column("Price"),
+            grid.Column(format: @<a href="~/DeleteQuote?id=@item.ID">Delete</a>)
+        )
+    )
 </main>

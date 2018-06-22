@@ -3,18 +3,15 @@
     Layout = "~/_Layout.cshtml";
     Page.Title = "Add a Quote";
 
-    var materialList = Desk.Surface.GetValues(typeof(Desk.Surface)).Cast<Desk.Surface>().Select(s => new SelectListItem
+    Validation.RequireField("customerName", "Customer Name is required");
+    Validation.RequireField("depth", "Depth is required");
+    Validation.RequireField("width", "Width is required");
+    Validation.RequireField("numDrawers", "Number of Drawers is required");
+    Validation.RequireField("surfaceMaterial", "Surface Material is required");
+    Validation.RequireField("deliveryTime", "Delivery Time is required");
+
+    if (IsPost && Validation.IsValid())
     {
-        Text = s.ToString(),
-        Value = ((int)s).ToString()
-    }).ToList();
-
-    // doesn't work yet
-    var deliveryTime = (IEnumerable<SelectListItem>)System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(DeskQuote.Delivery)); //.EnumHelper.GetSelectList(typeof(DeskQuote.Delivery));
-
-    if (IsPost)
-    {
-
         Desk newDesk = new Desk
         {
             Depth = Decimal.Parse(Request.Form["depth"]),
@@ -24,12 +21,11 @@
         };
 
 
-
-
         DeskQuote newQuote = new DeskQuote(newDesk, Request.Form["customerName"], Int32.Parse(Request.Form["deliveryTime"]), DateTime.Now);
-        Database db = Database.Open("ScriptureLibrary");
+        Database db = Database.Open("DeskLibrary");
         string insertCommand = "INSERT INTO DeskQuotes (Depth, Width, NumDrawers, SurfaceMaterial, OrderDate, CustomerName, Price, DeliveryTime) VALUES (@0, @1, @2, @3, @4, @5, @6, @7)";
-        db.Execute(insertCommand, newQuote.Desk.Depth, newQuote.Desk.Width, newQuote.Desk.SurfaceMaterial, newQuote.OrderDate, newQuote.CustomerName, newQuote.Price, newQuote.DeliveryTime);
+        db.Execute(insertCommand, newQuote.Desk.Depth, newQuote.Desk.Width, newDesk.NumDrawers, newQuote.Desk.SurfaceMaterial, newQuote.OrderDate, newQuote.CustomerName, newQuote.Price, newQuote.DeliveryTime);
+        Response.Redirect("~/SearchQuotes");
     }
 }
 
@@ -40,6 +36,7 @@
 </style>
 <main>
     <h2>Add Quote</h2>
+    @Html.ValidationSummary()
     <form method="post">
         <fieldset>
             <legend>Desk Information</legend>
@@ -61,11 +58,7 @@
             </p>
             <p>
                 <label for="surfaceMaterial">Surface Material:</label>
-                @Html.DropDownList("surfaceMaterial", materialList)
-                    
-
-
-                <select name="">
+                <select name="surfaceMaterial">
                     <option value="100">Laminate</option>
                     <option value="200">Oak</option>
                     <option value="50">Pine</option>
@@ -75,7 +68,6 @@
             </p>
             <p>
                 <label for="deliveryTime">Delivery Time:</label>
-                @Html.DropDownList("deliveryTime", deliveryTime)
                 <select name="deliveryTime">
                     <option value="3">3 Days - Rush</option>
                     <option value="5">5 Days - Rush</option>

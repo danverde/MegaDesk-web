@@ -1,9 +1,144 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+﻿@{
+    Layout = "~/_Layout.cshtml";
+    Page.Title = "Edit Quote";
 
-</body>
-</html>
+    var customerName = "";
+    var OrderDate = "";
+    var Depth = "";
+    var Width = "";
+    var NumDrawers = "";
+    var SurfaceMaterial = "";
+    var DeliveryTime = "";
+    var Price = "";
+    var QuoteId = "";
+
+
+    //This populates the fields with the original values except for the dropdowns
+    if (!IsPost)
+    {
+        if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
+        {
+            QuoteId = Request.QueryString["ID"];
+            var db = Database.Open("DeskLibrary");
+            var dbCommand = "SELECT * FROM DeskQuotes WHERE ID = @0";
+            var row = db.QuerySingle(dbCommand, QuoteId);
+
+            if (row != null)
+            {
+                customerName = row.customerName;
+                OrderDate = row.OrderDate.ToString();
+                Depth = row.Depth.ToString();
+                Width = row.Width.ToString();
+                NumDrawers = row.NumDrawers.ToString();
+                SurfaceMaterial = row.SurfaceMaterial.ToString();
+                DeliveryTime = row.DeliveryTime.ToString();
+                Price = row.Price.ToString();
+            }
+            else
+            {
+                Validation.AddFormError("No quote was selected.");
+            }
+        }
+        else
+        {
+            Validation.AddFormError("No quote was selected.");
+        }
+    }
+
+    //This updates the new values
+    if (IsPost)
+    {
+
+        //The field validation...
+        Validation.RequireField("customerName", "Customer Name is required");
+        Validation.RequireField("depth", "Depth is required");
+        Validation.RequireField("width", "Width is required");
+        Validation.RequireField("numDrawers", "Number of Drawers is required");
+        Validation.RequireField("surfaceMaterial", "Surface Material is required");
+        Validation.RequireField("deliveryTime", "Delivery Time is required");
+
+        //Creating a desk and quote object in order to calculate price and other stuff
+        Desk newDesk = new Desk
+        {
+            Depth = Decimal.Parse(Request.Form["depth"]),
+            Width = Decimal.Parse(Request.Form["width"]),
+            NumDrawers = Int32.Parse(Request.Form["numDrawers"]),
+            SurfaceMaterial = (int)Enum.Parse(typeof(Desk.Surface), Request.Form["surfaceMaterial"])
+        };
+
+        DeskQuote newQuote = new DeskQuote(newDesk, Request.Form["customerName"], (int)Enum.Parse(typeof(DeskQuote.Delivery), Request.Form["deliveryTime"]), DateTime.Now);
+
+        
+        Desk.Surface sm = (Desk.Surface)newDesk.SurfaceMaterial;
+        string surfaceMaterial = sm.ToString();
+
+        DeskQuote.Delivery dl = (DeskQuote.Delivery)newQuote.DeliveryTime;
+        string deliveryTime = dl.ToString();
+
+
+        customerName = Request.Form["customerName"];
+        Depth = Request.Form["depth"];
+        Width = Request.Form["width"];
+        NumDrawers = Request.Form["numDrawers"];
+        SurfaceMaterial = Request.Form["surfaceMaterial"];
+        DeliveryTime = Request.Form["deliveryTime"];
+        Price = newQuote.Price.ToString();
+        QuoteId = Request.Form["QuoteId"];
+
+        if (Validation.IsValid())
+        {
+            var db = Database.Open("DeskLibrary");
+            var updateCommand = "UPDATE DeskQuotes SET customerName=@0, OrderDate=@1, Depth=@2 ,Width=@3, NumDrawers=@4, SurfaceMaterial=@5, DeliveryTime=@6, Price=@7  WHERE Id=@8";
+            db.Execute(updateCommand, customerName, DateTime.Now, Depth, Width, NumDrawers, SurfaceMaterial, DeliveryTime, Price, QuoteId);
+            Response.Redirect("~/SearchQuotes.cshtml");
+        }
+    }
+}
+
+<h2>Edit Quote</h2>
+@Html.ValidationSummary()
+<form method="post">
+    <fieldset>
+        <legend>Quote Information</legend>
+
+        <p>
+            <label for="customerName">Customer Name:</label>
+            <input type="text" name="customerName" value="@customerName" required />
+        </p>
+        <p>
+            <label for="depth">Depth:</label>
+            <input type="number" name="depth" min="12" max="48" value="@Depth" required />
+        </p>
+        <p>
+            <label for="width">Width:</label>
+            <input type="number" name="width" min="24" max="96" value="@Width" required />
+        </p>
+        <p>
+            <label for="numDrawers">Number of Drawers:</label>
+            <input type="number" name="numDrawers" min="0" max="12" value="@NumDrawers" required />
+        </p>
+        <p>
+            <label for="surfaceMaterial">Surface Material:</label>
+            <select name="surfaceMaterial">
+                <option value="Laminate">Laminate</option>
+                <option value="Oak">Oak</option>
+                <option value="Pine">Pine</option>
+                <option value="Rosewood">Rosewood</option>
+                <option value="Veneer">Veneer</option>
+            </select>
+        </p>
+        <p>
+            <label for="deliveryTime">Delivery Time:</label>
+            <select name="deliveryTime">
+                <option value="3">3 Days - Rush</option>
+                <option value="5">5 Days - Rush</option>
+                <option value="7">7 Days - Rush</option>
+                <option value="14">14 Days - No Rush</option>
+            </select>
+        </p>
+
+        <input type="hidden" name="QuoteId" value="@QuoteId" />
+
+        <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
+    </fieldset>
+</form>

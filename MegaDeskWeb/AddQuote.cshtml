@@ -20,19 +20,15 @@
             SurfaceMaterial = (int)Enum.Parse(typeof(Desk.Surface), Request.Form["surfaceMaterial"])
         };
 
-        DeskQuote newQuote = new DeskQuote(newDesk, Request.Form["customerName"], (int)Enum.Parse(typeof(DeskQuote.Delivery), Request.Form["deliveryTime"]), DateTime.Now);
 
-        /* Convert enum from int to string */
-        Desk.Surface sm = (Desk.Surface)newDesk.SurfaceMaterial;
-        string surfaceMaterial = sm.ToString();
+        DeskQuote newQuote = new DeskQuote(newDesk, Request.Form["customerName"], (int)Enum.Parse(typeof(DeskQuote.Delivery), Request.Form["deliveryTime"]), DateTime.Now);
 
         DeskQuote.Delivery dl = (DeskQuote.Delivery)newQuote.DeliveryTime;
         string deliveryTime = dl.ToString();
 
-
         Database db = Database.Open("DeskLibrary");
         string insertCommand = "INSERT INTO DeskQuotes (Depth, Width, NumDrawers, SurfaceMaterial, OrderDate, CustomerName, Price, DeliveryTime) VALUES (@0, @1, @2, @3, @4, @5, @6, @7)";
-        db.Execute(insertCommand, newQuote.Desk.Depth, newQuote.Desk.Width, newDesk.NumDrawers, surfaceMaterial, newQuote.OrderDate, newQuote.CustomerName, newQuote.Price, deliveryTime);
+        db.Execute(insertCommand, newQuote.Desk.Depth, newQuote.Desk.Width, newDesk.NumDrawers, Request.Form["surfaceMaterial"], newQuote.OrderDate, newQuote.CustomerName, newQuote.Price, deliveryTime);
         Response.Redirect("~/SearchQuotes");
     }
 }
